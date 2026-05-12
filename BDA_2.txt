@@ -1,0 +1,116 @@
+Assignment 2: Matrix Multiplication using MapReduce — Complete Re-Practice Steps
+
+Step 1: Start Hadoop
+start-dfs.sh
+
+Step 2: Verify Hadoop
+jps
+
+Expected:
+NameNode
+DataNode
+SecondaryNameNode
+Jps
+
+Step 3: Create Practical Folder
+mkdir ~/practical2
+cd ~/practical2
+
+Step 4: Create mapper.py
+command - nano mapper.py
+
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    tokens = line.strip().split(',')
+
+    if tokens[0] == 'A':
+        for k in range(0, 2):
+            print(f"{tokens[1]},{k}\tA,{tokens[2]},{tokens[3]}")
+
+    elif tokens[0] == 'B':
+        for i in range(0, 2):
+            print(f"{i},{tokens[2]}\tB,{tokens[1]},{tokens[3]}")
+
+Step 5: Create reducer.py
+command - nano reducer.py
+
+#!/usr/bin/env python3
+import sys
+from collections import defaultdict
+
+current_key = None
+A_vals = defaultdict(float)
+B_vals = defaultdict(float)
+
+for line in sys.stdin:
+    key, value = line.strip().split('\t')
+    matrix, index, val = value.split(',')
+
+    if current_key and current_key != key:
+        result = sum(A_vals[k] * B_vals[k] for k in A_vals if k in B_vals)
+        print(f"{current_key}\t{result}")
+
+        A_vals.clear()
+        B_vals.clear()
+
+    current_key = key
+
+    if matrix == 'A':
+        A_vals[index] = float(val)
+    else:
+        B_vals[index] = float(val)
+
+if current_key:
+    result = sum(A_vals[k] * B_vals[k] for k in A_vals if k in B_vals)
+    print(f"{current_key}\t{result}")
+
+Step 6: Create a.csv
+command - nano a.csv
+
+A,0,0,1
+A,0,1,2
+A,1,0,3
+A,1,1,4
+
+Step 7: Create b.csv
+command - nano b.csv
+
+B,0,0,5
+B,1,0,6
+B,0,1,7
+B,1,1,8
+
+Step 8: Give Permission
+chmod +x mapper.py reducer.py
+
+Step 9: Remove Old HDFS Data
+hadoop fs -rm -r /input
+hadoop fs -rm -r /output_matrix
+
+Step 10: Create Input Folder
+hadoop fs -mkdir /input
+
+Step 11: Upload Files
+hadoop fs -put a.csv /input
+hadoop fs -put b.csv /input
+
+Step 12: Run Matrix Multiplication
+
+hadoop jar ~/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar \
+-files mapper.py,reducer.py \
+-mapper mapper.py \
+-reducer reducer.py \
+-input /input \
+-output /output_matrix
+
+Step 13: View Output
+hadoop fs -cat /output_matrix/part-00000
+
+Expected Output
+
+0,0 17.0
+0,1 23.0
+1,0 39.0
+1,1 53.0
