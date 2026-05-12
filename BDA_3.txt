@@ -1,0 +1,95 @@
+Assignment 3: Student Grades using MapReduce — Complete Steps
+
+Step 1: Start Hadoop
+start-dfs.sh
+
+Step 2: Verify Hadoop
+jps
+
+Expected:
+NameNode
+DataNode
+SecondaryNameNode
+Jps
+
+Step 3: Create Practical Folder
+mkdir ~/practical3
+cd ~/practical3
+
+Step 4: Create mapper.py
+
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    line = line.strip()
+
+    if line:
+        name, marks = line.split(',')
+        print(f"{name}\t{marks}")
+
+Step 5: Create reducer.py
+
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    name, marks = line.strip().split('\t')
+    marks = int(marks)
+
+    if marks >= 90:
+        grade = 'A'
+    elif marks >= 80:
+        grade = 'B'
+    elif marks >= 70:
+        grade = 'C'
+    elif marks >= 60:
+        grade = 'D'
+    else:
+        grade = 'F'
+
+    print(f"{name}\t{grade}")
+
+Step 6: Create students.txt
+
+Alice,85
+Bob,67
+Charlie,92
+David,74
+Eva,58
+
+Step 7: Give Permission
+chmod +x mapper.py reducer.py
+
+Step 8: Remove Old HDFS Data
+hadoop fs -rm -r /input
+hadoop fs -rm -r /output_grades
+
+Step 9: Create Input Folder
+hadoop fs -mkdir /input
+
+Step 10: Upload File
+hadoop fs -put students.txt /input
+
+Step 11: Run MapReduce Job
+
+hadoop jar ~/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar \
+-files mapper.py,reducer.py \
+-mapper mapper.py \
+-reducer reducer.py \
+-input /input/students.txt \
+-output /output_grades
+
+Step 12: View Output
+hadoop fs -cat /output_grades/part-00000
+
+Expected Output
+
+Alice B
+Bob D
+Charlie A
+David C
+Eva F
+
+Re-run Command
+hadoop fs -rm -r /output_grades
