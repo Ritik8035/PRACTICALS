@@ -1,0 +1,70 @@
+Practical 2: Employee Record System
+Question
+
+A company wants to shift its employee record system from spreadsheets to a NoSQL database. As a software engineer, you are required to create and manage employee records using MongoDB. Each employee's information should include Employee ID, Name, Department, Designation, and Salary.
+
+You are required to:
+
+Create a database named CompanyDB.
+Create a collection named Employees within the database.
+Perform the following CRUD operations:
+Insert one or more employee records.
+Query employee records based on different conditions.
+Update employee details such as salary or designation.
+Delete an employee record using a specific condition.
+
+Solution
+Step 1: Installation (Ubuntu Example)
+sudo systemctl start mongodb
+sudo systemctl enable mongodb
+Step 2: Start MongoDB Shell
+mongosh
+Step 3: Create Database and Collection
+use CompanyDB
+db.createCollection("Employees")
+Step 4: Insert Records
+db.Employees.insertOne({
+ emp_id: "EMP001",
+ name: "Priya Desai",
+ department: "HR",
+ designation: "Manager",
+ salary: 65000
+})
+db.Employees.insertMany([
+ {
+ emp_id: "EMP002",
+ name: "Ankit Verma",
+ department: "IT",
+ designation: "Developer",
+ salary: 72000
+ },
+ {
+ emp_id: "EMP003",
+ name: "Ritika Shah",
+ department: "Finance",
+ designation: "Analyst",
+ salary: 58000
+ }
+])
+Step 5: Query Records
+
+Fetch all employees:
+
+db.Employees.find().pretty()
+
+Fetch employees with salary above ₹60,000:
+
+db.Employees.find({ salary: { $gt: 60000 } })
+Step 6: Update Record
+
+Change designation of employee EMP002:
+
+db.Employees.updateOne(
+ { emp_id: "EMP002" },
+ { $set: { designation: "Senior Developer" } }
+)
+Step 7: Delete Record
+
+Delete employee EMP003:
+
+db.Employees.deleteOne({ emp_id: "EMP003" })
