@@ -1,0 +1,70 @@
+Practical 3: Library Management System
+Question
+
+A college library wants to maintain a digital database of books instead of keeping handwritten registers. As a backend developer, you are assigned to develop a MongoDB-based system to manage books. Each book entry should include a Book ID, Title, Author, Category, and Availability status.
+
+You are required to:
+
+Create a database named LibraryDB.
+Create a collection named Books.
+Perform the following CRUD operations:
+Insert multiple book records.
+Query specific books using filter conditions.
+Update book details such as availability status.
+Delete a book record from the database.
+
+Solution
+Step 1: Install MongoDB (on Ubuntu)
+sudo systemctl start mongodb
+sudo systemctl enable mongodb
+Step 2: Start MongoDB Shell
+mongosh
+Step 3: Create Database and Collection
+use LibraryDB
+db.createCollection("Books")
+Step 4: Insert Book Records
+db.Books.insertMany([
+ {
+ book_id: "B001",
+ title: "Database Systems",
+ author: "Raghu Ramakrishnan",
+ category: "Computer Science",
+ available: true
+ },
+{
+ book_id: "B002",
+ title: "Clean Code",
+ author: "Robert C. Martin",
+ category: "Programming",
+ available: false
+ },
+ {
+ book_id: "B003",
+ title: "Introduction to Algorithms",
+ author: "Cormen et al.",
+ category: "Algorithms",
+ available: true
+ }
+])
+Step 5: Query Book Records
+
+Show all books:
+
+db.Books.find().pretty()
+
+Show available books:
+
+db.Books.find({ available: true })
+Step 6: Update Book Availability
+
+Mark "B002" as available:
+
+db.Books.updateOne(
+ { book_id: "B002" },
+ { $set: { available: true } }
+)
+Step 7: Delete a Book Record
+
+Remove book with book_id = "B003":
+
+db.Books.deleteOne({ book_id: "B003" })
