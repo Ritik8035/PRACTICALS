@@ -1,0 +1,94 @@
+Practical 4: Product Catalog Database
+Question
+
+An e-commerce startup wants to build a product catalog database to store and manage product information. As a database developer, your task is to use MongoDB to:
+
+Insert multiple products into the catalog.
+Query specific products using filters.
+Update and delete product information.
+Sort products by price.
+Project only selected fields from the data.
+Limit the number of results.
+Use aggregation to compute category-wise average prices.
+
+Solution
+Step 1: Install MongoDB
+
+(Same as previous exercises)
+
+Step 2: Start MongoDB Shell
+mongosh
+Step 3: Create Database and Collection
+db.createCollection("Products")
+Step 4: Insert Product Documents
+db.Products.insertMany([
+ {
+ product_id: "P001",
+ name: "Wireless Mouse",
+ category: "Electronics",
+ price: 599,
+ stock: 120,
+ rating: 4.3
+ },
+ {
+ product_id: "P002",
+ name: "Bluetooth Speaker",
+ category: "Electronics",
+ price: 1299,
+ stock: 60,
+ rating: 4.6
+ },
+ {
+ product_id: "P003",
+ name: "Yoga Mat",
+ category: "Fitness",
+ price: 799,
+ stock: 45,
+ rating: 4.1
+ },
+ {
+ product_id: "P004",
+ name: "Laptop Stand",
+ category: "Accessories",
+ price: 999,
+ stock: 35,
+ rating: 4.0
+ }
+])
+Step 5: Basic Queries
+
+Find all products:
+
+db.Products.find().pretty()
+
+Find products in Electronics category:
+
+db.Products.find({ category: "Electronics" })
+Step 6: Update Document
+
+Increase stock of P003 by 10:
+
+db.Products.updateOne(
+ { product_id: "P003" },
+ { $inc: { stock: 10 } }
+)
+Step 7: Delete Document
+
+Delete product with ID P004:
+
+db.Products.deleteOne({ product_id: "P004" })
+Step 8: Sort Products by Price (Descending)
+db.Products.find().sort({ price: -1 })
+Step 9: Projection (Show only product name and price)
+db.Products.find({}, { name: 1, price: 1, _id: 0 })
+Step 10: Limit Results (Top 2 by rating)
+db.Products.find().sort({ rating: -1 }).limit(2)
+Step 11: Aggregation – Average Price per Category
+db.Products.aggregate([
+ {
+ $group: {
+ _id: "$category",
+ average_price: { $avg: "$price" }
+ }
+ }
+])
