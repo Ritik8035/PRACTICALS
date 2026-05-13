@@ -1,5 +1,8 @@
 BDA_PRACTICAL_1
 
+if name node not working....
+-----hdfs namenode -format
+
 
 Hadoop MapReduce Practical – Complete Steps
 
