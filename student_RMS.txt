@@ -1,0 +1,85 @@
+Practical 1: Student Record Management System
+Question
+
+The AI & DS Department of a college wants to digitize and manage student data using a NoSQL database. As a developer, build a application to manage student records. Each student record should include details such as roll number, name, branch, year, and marks.
+
+You are required to:
+
+Create a database named CollegeDB.
+Create a collection named Students within the database.
+Perform the following CRUD operations on the Students collection:
+Insert multiple student records.
+Query student records based on different criteria (e.g., all records, marks > 80).
+Update existing student details (e.g., marks).
+Delete a specific student record.
+
+Solution
+Step 1: Install MongoDB
+
+For Ubuntu:
+
+sudo systemctl start mongodb
+sudo systemctl enable mongodb
+
+Step 2: Start MongoDB Shell
+mongosh
+
+Step 3: Create Database and Collection
+
+use CollegeDB
+db.createCollection("Students")
+
+Step 4: Insert Documents
+db.Students.insertOne({
+ roll_no: "CSE1001",
+ name: "Ravi Sharma",
+ branch: "CSE",
+ year: 2,
+ marks: 88
+})
+
+
+db.Students.insertMany([
+ {
+ roll_no: "CSE1002",
+ name: "Sneha Patil",
+ branch: "CSE",
+ year: 2,
+ marks: 91
+ },
+ {
+ roll_no: "CSE1003",
+ name: "Amit Verma",
+ branch: "IT",
+ year: 1,
+ marks: 76
+ }
+])
+
+
+Step 5: Query Documents
+
+Find all students:
+
+db.Students.find().pretty()
+
+Find students with marks greater than 80:
+
+db.Students.find({ marks: { $gt: 80 } })
+
+
+Step 6: Update Document
+
+Update marks of student with roll number "CSE1001":
+
+db.Students.updateOne(
+ { roll_no: "CSE1001" },
+ { $set: { marks: 90 } }
+)
+
+
+Step 7: Delete Document
+
+Delete student with roll number "CSE1003":
+
+db.Students.deleteOne({ roll_no: "CSE1003" })
