@@ -1,0 +1,63 @@
+client.py
+  import xmlrpc.client
+
+with xmlrpc.client.ServerProxy("http://localhost:8000/RPC2") as proxy:
+    try:
+        num = int(input("Enter number :"))
+        result = proxy.calculate_factorial(num)
+        print(f"Factorial of {num} is: {result}")
+    except Exception as e:
+        print("Error:",e)
+
+
+
+
+server.py
+
+  from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.server import SimpleXMLRPCRequestHandler
+
+# Factorial class
+class FactorialServer:
+
+    def calculate_factorial(self, n):
+
+        if n < 0:
+            return "Please enter non-negative number"
+
+        result = 1
+
+        for i in range(1, n + 1):
+            result *= i
+
+        return result
+
+
+# Request handler
+class RequestHandler(SimpleXMLRPCRequestHandler):
+    rpc_paths = ('/RPC2',)
+
+
+# Create server
+with SimpleXMLRPCServer(("localhost", 8000),
+                        requestHandler=RequestHandler) as server:
+
+    server.register_introspection_functions()
+
+    factorial_server = FactorialServer()
+
+    server.register_instance(factorial_server)
+
+    print("Factorial Server is ready to accept requests.")
+
+    server.serve_forever()
+
+
+
+
+
+
+
+
+
+
